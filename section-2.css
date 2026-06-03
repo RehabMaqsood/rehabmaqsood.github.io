@@ -1,0 +1,943 @@
+/* =========================================================
+   SECTION 2 — PRODUCTION SYSTEMS
+   Three layers: Workflow · Infrastructure · Governance.
+   Artifacts are the argument; copy is minimal.
+   ========================================================= */
+
+/* Hide reserved-for-section-3 block entirely */
+.reserved-for-section-3 { display: none !important; }
+
+/* ---------- Layer scaffolding ---------- */
+.layer{
+  position: relative;
+  padding: 80px 0 140px;
+  border-top: 1px solid var(--rule);
+  max-width: 1480px;
+}
+.layer:first-of-type{ border-top: 0; padding-top: 0; }
+
+.layer-head{
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 22px;
+  row-gap: 14px;
+  align-items: center;
+  margin-bottom: 80px;
+  max-width: 1080px;
+}
+.layer-head .layer-num{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  color: var(--accent);
+  padding: 6px 10px 5px;
+  background: transparent;
+  border: 1px solid color-mix(in oklch, var(--accent) 55%, transparent);
+}
+.layer-head .layer-tag{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.layer-head .layer-claim{
+  grid-column: 1 / -1;
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  font-size: clamp(36px, 4.2vw, 56px);
+  line-height: 1.04;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  max-width: 22ch;
+}
+.layer-head .layer-claim em{
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+.layer-head .layer-sub{
+  grid-column: 1 / -1;
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(17px, 1.3vw, 21px);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 62ch;
+}
+
+/* component-num shared inside layers */
+.layer .component-num{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.layer .component-num .roman { color: var(--ink-mute); margin-right: 12px; }
+
+.layer h4{
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  font-size: clamp(26px, 2.6vw, 36px);
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  margin-bottom: 18px;
+  max-width: 24ch;
+}
+.layer h4 em{
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+/* ============================================================
+   LAYER 1 — Workflow flowchart + zoom funnel + sub-flow
+   ============================================================ */
+.flow-stage{
+  position: relative;
+  background: transparent;
+  outline: 0;
+}
+.flow-scroll{
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 24px 0 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.flow-scroll::-webkit-scrollbar{ height: 6px; }
+.flow-scroll::-webkit-scrollbar-thumb{ background: var(--rule); border-radius: 3px; }
+
+.flowchart{
+  display: block;
+  width: 100%;
+  min-width: 1180px;
+  height: auto;
+  font-family: "JetBrains Mono", monospace;
+}
+.flowchart.subflow{ min-width: 1240px; }
+
+/* Block — base style */
+.flowchart .block rect{
+  fill: transparent;
+  stroke: var(--ink-mute);
+  stroke-width: 1;
+  transition: stroke 240ms ease, stroke-width 240ms ease, fill 240ms ease;
+}
+.flowchart .block text{
+  fill: var(--ink);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.flowchart .block.terminal rect{
+  stroke-dasharray: 3 3;
+}
+
+/* Color tones — grouped by lane/function. Subtle fills so text reads on dark bg. */
+.flowchart .block.tone-cool rect{
+  fill: color-mix(in oklch, var(--paint-a) 50%, transparent);
+  stroke: color-mix(in oklch, var(--paint-a) 95%, var(--ink) 5%);
+}
+.flowchart .block.tone-cool text{ fill: var(--ink); }
+
+.flowchart .block.tone-gold rect{
+  fill: color-mix(in oklch, var(--paint-d) 22%, transparent);
+  stroke: color-mix(in oklch, var(--paint-d) 70%, transparent);
+}
+.flowchart .block.tone-gold text{ fill: var(--ink); }
+
+.flowchart .block.tone-rust rect{
+  fill: color-mix(in oklch, var(--paint-c) 50%, transparent);
+  stroke: color-mix(in oklch, var(--paint-c) 90%, transparent);
+}
+.flowchart .block.tone-rust text{ fill: var(--ink); }
+
+.flowchart .block.tone-peach rect{
+  fill: color-mix(in oklch, var(--accent-soft) 22%, transparent);
+  stroke: color-mix(in oklch, var(--accent-soft) 70%, transparent);
+}
+.flowchart .block.tone-peach text{ fill: var(--ink); }
+
+.flowchart .block.tone-accent rect{
+  fill: color-mix(in oklch, var(--accent) 28%, transparent);
+  stroke: var(--accent);
+  stroke-width: 1.4;
+}
+.flowchart .block.tone-accent text{ fill: var(--ink); font-weight: 500; }
+
+/* Arrows */
+.flowchart .arrow{
+  fill: none;
+  stroke: var(--ink-mute);
+  stroke-width: 1;
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  transition: stroke-dashoffset 1100ms cubic-bezier(.4, 0, .2, 1);
+}
+.flowchart #arrowhead path,
+.flowchart #sf-arrow path{ fill: var(--ink-mute); }
+
+/* Block reveal — gentle ease-in with slight Y, opacity primary */
+.flowchart .block{
+  opacity: 0;
+  transition: opacity 900ms cubic-bezier(.4, 0, .2, 1);
+}
+.flow-stage.in .flowchart.macro .block{ opacity: 1; }
+.flow-stage.in .flowchart.macro .block[data-step="1"]{ transition-delay: 0s; }
+.flow-stage.in .flowchart.macro .block[data-step="3"]{ transition-delay: .45s; }
+.flow-stage.in .flowchart.macro .block[data-step="5"]{ transition-delay: 1s; }
+.flow-stage.in .flowchart.macro .block[data-step="7"]{ transition-delay: 1.4s; }
+.flow-stage.in .flowchart.macro .block[data-step="9"]{ transition-delay: 1.9s; }
+.flow-stage.in .flowchart.macro .block[data-step="11"]{ transition-delay: 2.2s; }
+.flow-stage.in .flowchart.macro .arrow[data-step="2"]{ stroke-dashoffset: 0; transition-delay: .2s; }
+.flow-stage.in .flowchart.macro .arrow[data-step="4"]{ stroke-dashoffset: 0; transition-delay: .7s; }
+.flow-stage.in .flowchart.macro .arrow[data-step="6"]{ stroke-dashoffset: 0; transition-delay: 1.25s; }
+.flow-stage.in .flowchart.macro .arrow[data-step="8"]{ stroke-dashoffset: 0; transition-delay: 1.65s; }
+.flow-stage.in .flowchart.macro .arrow[data-step="10"]{ stroke-dashoffset: 0; transition-delay: 2.05s; }
+
+/* Video Production block lights up at end of macro sequence — signals the drill */
+.flow-stage.in .flowchart.macro .block.drillable{
+  animation: vp-pulse 2400ms cubic-bezier(.4, 0, .2, 1) 2.4s 1 forwards;
+}
+@keyframes vp-pulse{
+  0%   { filter: drop-shadow(0 0 0 transparent); }
+  35%  { filter: drop-shadow(0 0 16px color-mix(in oklch, var(--accent) 65%, transparent)); }
+  100% { filter: drop-shadow(0 0 6px color-mix(in oklch, var(--accent) 35%, transparent)); }
+}
+.flow-stage.in .flowchart.macro .block.drillable rect{
+  transition: stroke 700ms ease 2.4s, stroke-width 700ms ease 2.4s, fill 700ms ease 2.4s;
+  stroke-width: 1.8;
+  fill: color-mix(in oklch, var(--accent) 42%, transparent);
+}
+
+/* Sub-flow reveal — animates separately when its own .reveal triggers */
+.flow-subflow.in .flowchart.subflow .block{ opacity: 1; }
+.flow-subflow.in .flowchart.subflow .block[data-step="1"]{ transition-delay: 0s; }
+.flow-subflow.in .flowchart.subflow .block[data-step="3"]{ transition-delay: .35s; }
+.flow-subflow.in .flowchart.subflow .block[data-step="5"]{ transition-delay: .85s; }
+.flow-subflow.in .flowchart.subflow .block[data-step="7"]{ transition-delay: 1.25s; }
+.flow-subflow.in .flowchart.subflow .block[data-step="9"]{ transition-delay: 1.7s; }
+.flow-subflow.in .flowchart.subflow .block[data-step="11"]{ transition-delay: 2.05s; }
+.flow-subflow.in .flowchart.subflow .block[data-step="13"]{ transition-delay: 2.4s; }
+.flow-subflow.in .flowchart.subflow .block[data-step="15"]{ transition-delay: 2.75s; }
+.flow-subflow.in .flowchart.subflow .arrow[data-step="2"]{ stroke-dashoffset: 0; transition-delay: .15s; }
+.flow-subflow.in .flowchart.subflow .arrow[data-step="4"]{ stroke-dashoffset: 0; transition-delay: .6s; }
+.flow-subflow.in .flowchart.subflow .arrow[data-step="6"]{ stroke-dashoffset: 0; transition-delay: 1.05s; }
+.flow-subflow.in .flowchart.subflow .arrow[data-step="8"]{ stroke-dashoffset: 0; transition-delay: 1.45s; }
+.flow-subflow.in .flowchart.subflow .arrow[data-step="10"]{ stroke-dashoffset: 0; transition-delay: 1.9s; }
+.flow-subflow.in .flowchart.subflow .arrow[data-step="12"]{ stroke-dashoffset: 0; transition-delay: 2.2s; }
+.flow-subflow.in .flowchart.subflow .arrow[data-step="14"]{ stroke-dashoffset: 0; transition-delay: 2.55s; }
+
+/* Drillable hover — Video Production block in macro */
+.flowchart .block.drillable{ cursor: pointer; }
+.flowchart .block.drillable:hover rect{
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  fill: color-mix(in oklch, var(--accent) 36%, transparent);
+}
+
+/* ============================================================
+   Video Production drill — click-to-expand
+   ============================================================ */
+.vp-drill-trigger{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 26px auto 0;
+  padding: 14px 22px 13px;
+  background: transparent;
+  border: 1px solid color-mix(in oklch, var(--accent) 45%, transparent);
+  color: var(--ink-soft);
+  font: inherit;
+  cursor: pointer;
+  /* Held back until the macro flow has finished. */
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 600ms ease, transform 600ms ease, border-color 220ms ease, background 220ms ease, color 220ms ease;
+  pointer-events: none;
+}
+.flow-stage.in .vp-drill-trigger{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition-delay: 3.0s, 3.0s, 0s, 0s, 0s;
+}
+.vp-drill-trigger:hover{
+  background: color-mix(in oklch, var(--accent) 14%, transparent);
+  border-color: var(--accent);
+  color: var(--ink);
+}
+.vp-drill-trigger .vpt-icon{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px; height: 22px;
+  border: 1px solid color-mix(in oklch, var(--accent) 70%, transparent);
+  color: var(--accent);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 400;
+  transition: transform 280ms ease, border-color 220ms ease, color 220ms ease, background 220ms ease;
+}
+.vp-drill-trigger:hover .vpt-icon{
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: rotate(90deg);
+}
+.vp-drill-trigger .vpt-eyebrow{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.vp-drill-trigger .vpt-label{
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--ink);
+  letter-spacing: -0.003em;
+}
+.vp-drill-trigger .vpt-arrow{
+  font-family: "JetBrains Mono", monospace;
+  color: var(--ink-mute);
+  margin-left: 6px;
+  transition: transform 280ms ease, color 220ms ease;
+}
+.vp-drill-trigger:hover .vpt-arrow{
+  transform: translateY(3px);
+  color: var(--accent);
+}
+
+/* Once expanded, hide the trigger */
+.flow-stage.expanded .vp-drill-trigger{
+  opacity: 0;
+  transform: translateY(-2px);
+  pointer-events: none;
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+/* Sub-flow collapsed by default; expanded on .flow-stage.expanded */
+.flow-subflow{
+  margin-top: 4px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 600ms cubic-bezier(.2, .6, .2, 1), opacity 380ms ease 80ms;
+}
+.flow-stage.expanded .flow-subflow{
+  max-height: 1200px;
+  opacity: 1;
+}
+
+/* Close button inside sub-flow */
+.sf-head{ position: relative; }
+.sf-close{
+  position: absolute;
+  top: 22px; right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-mute);
+  font: inherit;
+  padding: 6px 10px 5px;
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+.sf-close:hover{ color: var(--accent-soft); border-color: color-mix(in oklch, var(--accent) 55%, transparent); }
+.sf-close .sfc-x{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+  line-height: 1;
+}
+.sf-close .sfc-label{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+.sf-head{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 24px 0 14px;
+  align-items: center;
+  text-align: center;
+}
+.sf-head .sf-eyebrow{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.sf-head .sf-title{
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  font-size: clamp(20px, 1.6vw, 24px);
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  margin: 0;
+}
+.sf-head .sf-title em{
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+/* ============================================================
+   LAYER 2 — Infrastructure
+   ============================================================ */
+.infra-row{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 60px;
+  align-items: start;
+  margin-bottom: 96px;
+}
+.infra-text{
+  position: sticky;
+  top: 120px;
+}
+.infra-text .infra-line{
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 42ch;
+  margin-bottom: 10px;
+}
+.infra-text .infra-caption{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-top: 18px;
+}
+
+/* Folder template tree */
+.folder-tree{
+  background: var(--bg-2);
+  border: 1px solid var(--rule);
+  padding: 28px 32px 32px;
+}
+.ft-folder{
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 14px;
+}
+.ft-folder .ft-icon{
+  width: 28px; height: 28px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ft-folder .ft-icon svg{ width: 22px; height: 22px; }
+.ft-folder .ft-name{
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  font-size: 17px;
+  color: var(--ink);
+  letter-spacing: -0.003em;
+}
+.ft-folder .ft-name em{
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+.ft-folder .ft-meta{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.ft-lists{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ft-list{
+  display: grid;
+  grid-template-columns: 24px 32px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  position: relative;
+  opacity: 0;
+  transition: opacity 500ms cubic-bezier(.2,.6,.2,1), background 240ms ease;
+  transition-delay: calc(var(--i, 0) * 80ms + 100ms);
+  border-left: 3px solid var(--tint, var(--ink-mute));
+  background: transparent;
+}
+.layer-2 .reveal.in .ft-list,
+.layer-2 .infra-templates.reveal.in .ft-list{ opacity: 1; }
+.ft-list:hover{ background: color-mix(in oklch, var(--tint, var(--accent)) 7%, transparent); }
+.ft-list .ft-rule{
+  width: 14px;
+  height: 1px;
+  background: var(--ink-mute);
+  justify-self: end;
+}
+.ft-list .ft-idx{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--tint, var(--ink-mute));
+}
+.ft-list .ft-list-name{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+.ft-list .ft-list-meta{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* Six tints — one per team. Lifted toward --ink so the index numerals stay legible on dark bg. */
+.ft-list.tint-cool    { --tint: color-mix(in oklch, var(--paint-a) 35%, var(--ink) 65%); }
+.ft-list.tint-peach   { --tint: var(--accent-soft); }
+.ft-list.tint-accent  { --tint: var(--accent); }
+.ft-list.tint-gold    { --tint: var(--paint-d); }
+.ft-list.tint-rust    { --tint: color-mix(in oklch, var(--paint-c) 30%, var(--ink) 70%); }
+.ft-list.tint-neutral { --tint: var(--ink-mute); }
+
+/* Video stages (Automation Setup, Feature Setup) */
+.video-stage{
+  background: var(--bg-2);
+  outline: 1px solid var(--rule);
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+}
+.video-stage video{
+  display: block;
+  width: 100%;
+  background: #000;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  object-position: center;
+}
+/* Screen-recording stages: show the full frame, never crop content. */
+.video-stage.video-crop-left video{
+  object-fit: contain;
+  object-position: center;
+  transform: none;
+}
+.video-stage figcaption{
+  padding: 12px 16px;
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--ink-soft);
+  background: var(--bg-2);
+  border-top: 1px solid var(--rule);
+}
+.video-stage .iv-tag{
+  display: inline-block;
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--accent);
+  padding: 3px 7px;
+  margin-right: 10px;
+  vertical-align: 2px;
+}
+
+/* SOPs */
+.infra-sops{ margin-top: 32px; }
+.infra-sops > h4{ max-width: 28ch; }
+.infra-sops .infra-line{
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 60ch;
+  margin-bottom: 32px;
+}
+.sop-cards{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 24px;
+}
+.sop-card{
+  background: var(--bg-2);
+  border: 1px solid var(--rule);
+  transition: border-color 280ms ease, background 280ms ease;
+}
+.sop-card:hover{ border-color: color-mix(in oklch, var(--accent) 40%, var(--rule)); }
+.sop-card[aria-expanded="true"]{
+  border-color: color-mix(in oklch, var(--accent) 55%, transparent);
+}
+.sop-card .sc-head{
+  display: grid;
+  grid-template-columns: 36px 1fr 28px;
+  align-items: start;
+  gap: 20px;
+  padding: 24px 28px;
+  cursor: pointer;
+  user-select: none;
+}
+.sop-card .sc-icon{
+  width: 36px;
+  color: var(--accent);
+  padding-top: 4px;
+}
+.sop-card .sc-icon svg{ width: 28px; height: 28px; }
+.sop-card .sc-tag{
+  display: inline-block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.sop-card .sc-title{
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 0 0 8px 0;
+}
+.sop-card .sc-title em{
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+.sop-card .sc-desc{
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.sop-card .sc-toggle{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--ink-mute);
+  align-self: center;
+  text-align: center;
+  transition: transform 320ms cubic-bezier(.2,.6,.2,1), color 240ms ease;
+}
+.sop-card[aria-expanded="true"] .sc-toggle{
+  transform: rotate(45deg);
+  color: var(--accent);
+}
+.sop-card .sc-body{
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 480ms cubic-bezier(.2,.6,.2,1);
+}
+.sop-card[aria-expanded="true"] .sc-body{
+  max-height: 1400px;
+}
+.sop-card .sc-excerpts{
+  padding: 24px 28px 22px 28px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.sc-excerpt .se-label{
+  display: block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+}
+.sc-excerpt p{
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.sc-excerpt p strong{ font-weight: 500; color: var(--ink); }
+.sc-excerpt p em{
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  color: var(--accent);
+}
+.sop-card .sc-footnote{
+  padding: 0 28px 24px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* Role chain */
+.role-chain{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: rc;
+  display: flex;
+  flex-direction: column;
+}
+.role-chain li{
+  display: grid;
+  grid-template-columns: 24px 180px 1fr;
+  gap: 18px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--rule);
+  counter-increment: rc;
+}
+.role-chain li::before{
+  content: counter(rc, decimal-leading-zero);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--ink-mute);
+}
+.role-chain li:last-child{ border-bottom: 0; }
+.role-chain .rc-role{
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--ink);
+}
+.role-chain .rc-act{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   LAYER 3 — Governance
+   ============================================================ */
+.gov-row{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 60px;
+  align-items: start;
+  margin-bottom: 96px;
+}
+.gov-text{ position: sticky; top: 120px; }
+.gov-text .gov-line{
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 42ch;
+}
+
+.gov-dash{ margin-bottom: 96px; }
+.gov-dash > h4{ margin-bottom: 32px; max-width: 32ch; }
+
+.dash-panels{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.dash-panel{
+  margin: 0;
+  background: var(--bg-2);
+  outline: 1px solid var(--rule);
+}
+.dash-panel .dp-frame{
+  background: var(--bg);
+  padding: 0;
+  aspect-ratio: 480 / 300;
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+.dash-panel .dp-chart{
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* Chart titles */
+.dp-title{
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: -0.003em;
+  fill: var(--ink);
+}
+.dp-subtitle{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  fill: var(--ink-mute);
+}
+.dp-grid line{
+  stroke: var(--rule);
+  stroke-width: 0.5;
+}
+.dp-axis-y text,
+.dp-axis-x text{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  fill: var(--ink-mute);
+}
+
+/* Bars — panel 01 (vertical) */
+.dp-bar rect{
+  fill: var(--paint-d);
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: center bottom;
+  transform-box: fill-box;
+  transition: opacity 500ms cubic-bezier(.2,.6,.2,1), transform 700ms cubic-bezier(.2,.6,.2,1);
+}
+.gov-dash.in .dp-bar.c1 rect{ opacity: .9; transform: scaleY(1); transition-delay: .15s; }
+.gov-dash.in .dp-bar.c2 rect{ opacity: .9; transform: scaleY(1); transition-delay: .25s; }
+.gov-dash.in .dp-bar.c3 rect{ opacity: .9; transform: scaleY(1); transition-delay: .35s; }
+.gov-dash.in .dp-bar.c4 rect{ opacity: .9; transform: scaleY(1); transition-delay: .45s; }
+.gov-dash.in .dp-bar.c5 rect{ opacity: .9; transform: scaleY(1); transition-delay: .55s; }
+
+.dp-val{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  fill: var(--ink);
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+.dp-cat{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  fill: var(--ink-soft);
+}
+.gov-dash.in .dp-bar.c1 .dp-val{ opacity: 1; transition-delay: .55s; }
+.gov-dash.in .dp-bar.c2 .dp-val{ opacity: 1; transition-delay: .65s; }
+.gov-dash.in .dp-bar.c3 .dp-val{ opacity: 1; transition-delay: .75s; }
+.gov-dash.in .dp-bar.c4 .dp-val{ opacity: 1; transition-delay: .85s; }
+.gov-dash.in .dp-bar.c5 .dp-val{ opacity: 1; transition-delay: .95s; }
+
+/* Bars — panel 02 (horizontal) */
+.dp-bar.h1 rect, .dp-bar.h2 rect, .dp-bar.h3 rect, .dp-bar.h4 rect, .dp-bar.h5 rect{
+  fill: var(--accent-soft);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transform-box: fill-box;
+  transition: opacity 500ms cubic-bezier(.2,.6,.2,1), transform 800ms cubic-bezier(.2,.6,.2,1);
+}
+.dp-bar.h1 rect{ fill: var(--accent); }
+.gov-dash.in .dp-bar.h1 rect{ opacity: .95; transform: scaleX(1); transition-delay: .2s; }
+.gov-dash.in .dp-bar.h2 rect{ opacity: .9;  transform: scaleX(1); transition-delay: .35s; }
+.gov-dash.in .dp-bar.h3 rect{ opacity: .85; transform: scaleX(1); transition-delay: .5s; }
+.gov-dash.in .dp-bar.h4 rect{ opacity: .8;  transform: scaleX(1); transition-delay: .65s; }
+.gov-dash.in .dp-bar.h5 rect{ opacity: .8;  transform: scaleX(1); transition-delay: .8s; }
+
+.dp-role{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  fill: var(--ink);
+}
+.dp-bar.h1 .dp-val,
+.dp-bar.h2 .dp-val,
+.dp-bar.h3 .dp-val,
+.dp-bar.h4 .dp-val,
+.dp-bar.h5 .dp-val{ text-anchor: start; }
+.gov-dash.in .dp-bar.h1 .dp-val{ opacity: 1; transition-delay: .7s; }
+.gov-dash.in .dp-bar.h2 .dp-val{ opacity: 1; transition-delay: .85s; }
+.gov-dash.in .dp-bar.h3 .dp-val{ opacity: 1; transition-delay: 1s; }
+.gov-dash.in .dp-bar.h4 .dp-val{ opacity: 1; transition-delay: 1.15s; }
+.gov-dash.in .dp-bar.h5 .dp-val{ opacity: 1; transition-delay: 1.3s; }
+
+.dash-panel figcaption{
+  padding: 14px 18px;
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--ink-soft);
+  background: var(--bg-2);
+  border-top: 1px solid var(--rule);
+}
+.dash-panel .dp-tag{
+  display: inline-block;
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--accent);
+  padding: 3px 7px;
+  margin-right: 10px;
+  vertical-align: 2px;
+}
+
+.gov-metrics{
+  margin-top: 32px;
+  padding-top: 48px;
+  border-top: 1px solid var(--rule);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1180px){
+  .infra-row, .gov-row{ grid-template-columns: 1fr; gap: 32px; }
+  .infra-text, .gov-text{ position: static; }
+  .sop-cards, .dash-panels{ grid-template-columns: 1fr; }
+}
+@media (max-width: 980px){
+  .layer{ padding: 60px 0 100px; }
+  .layer-head{ grid-template-columns: auto auto; margin-bottom: 56px; }
+  .role-chain li{ grid-template-columns: 24px 1fr; }
+  .role-chain .rc-act{ grid-column: 2; }
+}
