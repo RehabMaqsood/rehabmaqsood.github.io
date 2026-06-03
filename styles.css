@@ -161,7 +161,7 @@ a.inline:hover { color: var(--accent-soft); border-color: var(--accent-soft); }
   position: absolute;
   inset: -6%;
   z-index: 1;
-  background: url('img/martin-plains.jpg') center 40% / cover no-repeat;
+  background: url('martin-plains.jpg') center 40% / cover no-repeat;
   /* keep a touch of color, not a wash */
   filter: saturate(0.85) brightness(0.78) contrast(1.05);
   transform: translateY(var(--horizon-shift, 0px));
@@ -342,17 +342,17 @@ section.section::after{
 section#courses {
   --lit-x: 30%; --lit-y: 40%;
 }
-section#courses::before  { background-image: url('img/morisot.jpg'); background-position: 28% 42%; }
+section#courses::before  { background-image: url('morisot.jpg'); background-position: 28% 42%; }
 
 section#systems {
   --lit-x: 60%; --lit-y: 36%;
 }
-section#systems::before  { background-image: url('img/aivazovsky-jesus.jpg'); background-position: center 38%; }
+section#systems::before  { background-image: url('aivazovsky-jesus.jpg'); background-position: center 38%; }
 
 section#film {
   --lit-x: 38%; --lit-y: 38%;
 }
-section#film::before     { background-image: url('img/reading-woman.jpg'); background-position: 40% 35%; }
+section#film::before     { background-image: url('reading-woman.jpg'); background-position: 40% 35%; }
 
 section.section > * { position: relative; z-index: 1; }
 
